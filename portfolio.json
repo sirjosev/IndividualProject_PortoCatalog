@@ -1,26 +1,22 @@
-[
-  {
-    "title": "jalan jalan",
-    "categories": "#olahraga",
-    "description": "sama aja sih",
-    "media": [
-      "https://www.youtube.com/shorts/Mnr7RWjz3oQ"
-    ],
-    "documentation": "# 🤖 Pemetaan Optimal untuk Robot Penyapu Daun\n\nProyek ini adalah sebuah aplikasi berbasis *Computer Vision* yang bertujuan untuk mengidentifikasi titik-titik pengumpulan sampah dedaunan yang paling optimal di sebuah halaman. Aplikasi ini menggunakan model *machine learning* untuk menganalisis gambar halaman yang berantakan dan memberikan output visual berupa tanda di lokasi-lokasi strategis, sehingga dapat memandu robot penyapu untuk bekerja lebih efisien.\n\n---\n\n## 🚀 Alur Kerja Proyek\n\nProyek ini memiliki dua alur kerja utama: **Tahap Pembuatan Dataset & Training** (yang dilakukan secara offline) dan **Tahap Prediksi** (yang dijalankan oleh aplikasi).\n\n### Tahap 1: Pembuatan Dataset & Training Model (Offline)\n\nKarena pelabelan data secara manual sangat memakan waktu, proyek ini menggunakan metode cerdas untuk membuat dataset secara otomatis menggunakan pasangan gambar \"sebelum\" dan \"sesudah\".\n\n1.  **Pengumpulan Data**: Pengguna mengambil sepasang gambar menggunakan tripod untuk memastikan sudut pandang yang identik:\n    * `gambar_sebelum.jpg`: Foto halaman saat masih dipenuhi sampah daun.\n    * `gambar_sesudah.jpg`: Foto halaman setelah daun disapu dan dikumpulkan menjadi beberapa tumpukan kecil.\n\n2.  **Otomatisasi Pelabelan**: Skrip `create_labels.py` dijalankan. Skrip ini melakukan:\n    * **Penjajaran Gambar**: Memastikan kedua gambar benar-benar sejajar secara piksel.\n    * **Pengurangan Gambar**: Menghitung perbedaan antara gambar \"sesudah\" dan \"sebelum\". Hasilnya adalah gambar baru yang menyorot area di mana tumpukan daun muncul.\n    * **Deteksi & Pelabelan**: Mendeteksi \"gumpalan\" perbedaan tersebut, membuat kotak pembatas (bounding box) di sekelilingnya, dan menyimpannya sebagai file label `.txt` dalam format YOLO.\n\n3.  **Training Model**:\n    * Dataset yang dihasilkan (gambar `sebelum` dan label `.txt`) digunakan untuk melatih model deteksi objek YOLO.\n    * Hasil dari proses training adalah sebuah file bobot model, yaitu `best.pt`, yang merupakan \"otak\" dari aplikasi kita.\n\n### Tahap 2: Prediksi dengan Aplikasi (Online)\n\n1.  **Input Pengguna**: Pengguna mengunggah sebuah gambar halaman yang masih berantakan ke antarmuka aplikasi Gradio.\n2.  **Inferensi Model**: Aplikasi memuat model `best.pt` dan menjalankan prediksi pada gambar yang diunggah.\n3.  **Output Visual**: Model mengembalikan koordinat dari setiap \"potensi tumpukan daun\" yang terdeteksi. Aplikasi kemudian menggambar lingkaran merah di titik tengah setiap deteksi pada gambar asli dan menampilkannya kepada pengguna.\n\n---\n\n## 🛠️ Stack Teknologi\n\n* **Bahasa Pemrograman**: Python 3.x\n* **Computer Vision**: OpenCV\n* **Machine Learning**: PyTorch\n* **Model Deteksi Objek**: YOLOv5 / YOLOv8 (menggunakan library `ultralytics`)\n* **Antarmuka Web (UI)**: Gradio\n* **Deployment**: Hugging Face Spaces\n\n---\n\n## ⚙️ Panduan Instalasi & Training\n\nBerikut adalah langkah-langkah untuk menyiapkan proyek ini dari awal hingga model siap digunakan.\n\n### 1. Kloning Repositori\n```bash\ngit clone [https://url-repositori-anda.git](https://url-repositori-anda.git)\ncd nama-folder-proyek\n```\n\n### 2. Instalasi Dependensi\nBuat sebuah file `requirements.txt` dengan isi berikut, lalu jalankan instalasi.\n```\n# requirements.txt\ntorch\ntorchvision\nopencv-python-headless\nnumpy\ngradio\nultralytics\n```bash\npip install -r requirements.txt\n```\n\n### 3. Menyiapkan Dataset untuk Pelabelan Otomatis\nBuat struktur folder seperti di bawah ini dan isi dengan pasangan gambar Anda. Pastikan nama file di `before` dan `after` identik.\n```\n/leaf_dataset/\n|-- before/\n|   |-- 001.jpg\n|   |-- 002.jpg\n|-- after/\n|   |-- 001.jpg\n|   |-- 002.jpg\n```\n\n### 4. Membuat Label Otomatis\nJalankan skrip `create_labels.py` untuk memproses dataset Anda.\n```bash\npython create_labels.py\n```\nSetelah proses selesai, Anda akan memiliki folder `leaf_dataset/images` dan `leaf_dataset/labels` yang siap digunakan untuk training.\n\n### 5. Melatih Model YOLO\nAnda perlu membuat sebuah file konfigurasi dataset (misal: `dataset.yaml`) yang menunjuk ke folder data Anda. Kemudian, jalankan perintah training YOLO.\n```bash\n# Contoh perintah training (mungkin perlu disesuaikan)\nyolo train data=dataset.yaml model=yolov8n.pt epochs=100 imgsz=640\n```\nSetelah training selesai, Anda akan mendapatkan file `best.pt` di dalam folder `runs/detect/train/weights/`. Salin file ini ke direktori utama proyek Anda.\n\n---\n\n## 🚀 Panduan Deployment\n\nCara termudah untuk mendeploy aplikasi ini adalah menggunakan **Hugging Face Spaces**.\n\n1.  Buat akun di [Hugging Face](https://huggingface.co).\n2.  Buat **\"New Space\"** baru, pilih **Gradio SDK**.\n3.  Unggah file-file berikut ke repositori Space Anda:\n    * `app.py` (program utama aplikasi Gradio)\n    * `best.pt` (file model Anda yang sudah terlatih)\n    * `requirements.txt`\n\nHugging Face akan secara otomatis menginstal dependensi dan menjalankan aplikasi Anda.\n\n---\n\n## 📖 Panduan Penggunaan Aplikasi\n\nAplikasi ini dirancang agar mudah digunakan.\n\n* **Input**: Aplikasi menerima **satu input gambar** dari halaman yang ingin Anda analisis. Anda dapat mengunggahnya langsung dari komputer Anda. Format gambar yang didukung adalah JPEG, PNG, dll.\n* **Proses**: Setelah gambar terunggah, klik tombol **\"Prediksi Titik Optimal\"**. Aplikasi akan memproses gambar menggunakan model machine learning.\n* **Output**: Hasilnya akan ditampilkan di sisi kanan dalam dua bentuk:\n    1.  **Gambar Hasil**: Gambar asli Anda akan ditampilkan kembali, tetapi kini dengan **lingkaran-lingkaran merah** yang menandai lokasi-lokasi yang direkomendasikan untuk pengumpulan sampah.\n    2.  **Pesan Status**: Sebuah teks singkat yang memberitahu jumlah titik optimal yang berhasil ditemukan, misalnya: \"Ditemukan 5 titik pengumpulan optimal.\"",
-    "id": "item-1754654378601"
+{
+  "profile": {
+    "name": "Nama Anda",
+    "title": "Jabatan / Keahlian Anda",
+    "bio": "Deskripsi singkat tentang diri Anda. Klik tombol \"Edit Profil\" setelah login untuk mengubah bagian ini.",
+    "imageUrl": "https://placehold.co/150x150/4f46e5/ffffff?text=Foto+Anda",
+    "githubUrl": "#",
+    "linkedinUrl": "#"
   },
-  {
-    "id": "item-1754648680432",
-    "title": "bootcamp bangkit",
-    "category": "fadfaf",
-    "description": "dfafa",
-    "startDate": "2025-08-01",
-    "endDate": "2025-08-08",
-    "link": "https://gemini.google.com/app/902de18fc5faf2ff",
-    "categories": "#olahraga #coding",
-    "media": [
-      "https://www.youtube.com/shorts/Mnr7RWjz3oQ"
-    ],
-    "documentation": ""
-  }
-]
+  "items": [
+    {
+      "title": "fdasff",
+      "categories": "adfaf",
+      "description": "fadafa",
+      "media": [
+        "fadsf"
+      ],
+      "documentation": "fass",
+      "id": "item-1754670390378"
+    }
+  ]
+}

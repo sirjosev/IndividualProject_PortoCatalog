@@ -1,0 +1,26 @@
+[
+  {
+    "title": "jalan jalan",
+    "categories": "#olahraga",
+    "description": "sama aja sih",
+    "media": [
+      "https://www.youtube.com/shorts/Mnr7RWjz3oQ"
+    ],
+    "documentation": "",
+    "id": "item-1754654378601"
+  },
+  {
+    "id": "item-1754648680432",
+    "title": "bootcamp bangkit",
+    "category": "fadfaf",
+    "description": "dfafa",
+    "startDate": "2025-08-01",
+    "endDate": "2025-08-08",
+    "link": "https://gemini.google.com/app/902de18fc5faf2ff",
+    "categories": "#olahraga #coding",
+    "media": [
+      "https://www.youtube.com/shorts/Mnr7RWjz3oQ"
+    ],
+    "documentation": ""
+  }
+]

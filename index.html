@@ -6,7 +6,7 @@
     <title>Manajer Portofolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         ::-webkit-scrollbar { width: 8px; }
@@ -26,7 +26,7 @@
         .hidden-admin { display: none !important; }
         .youtube-embed { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; }
         .youtube-embed iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .prose img, .prose video { border-radius: 0.5rem; }
+        .prose img, .prose video { border-radius: 0.5rem; margin-top: 1rem; margin-bottom: 1rem;}
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200">
@@ -44,6 +44,27 @@
             </div>
         </header>
 
+        <!-- About Me Section -->
+        <div id="about-me" class="bg-gray-800 p-8 rounded-2xl shadow-lg mb-12 flex flex-col md:flex-row items-center gap-8 relative">
+            <img id="about-image" src="https://placehold.co/150x150/4f46e5/ffffff?text=Foto+Anda" alt="Foto Profil" class="w-36 h-36 rounded-full border-4 border-gray-700 object-cover flex-shrink-0">
+            <div class="text-center md:text-left">
+                <h2 id="about-name" class="text-3xl font-extrabold text-white">Nama Anda</h2>
+                <p id="about-title" class="text-indigo-400 font-semibold mt-1">Jabatan / Keahlian Anda</p>
+                <p id="about-bio" class="text-gray-300 mt-4 max-w-2xl">
+                    Deskripsi singkat tentang diri Anda. Klik tombol "Edit Profil" setelah login untuk mengubah bagian ini.
+                </p>
+                <div class="flex justify-center md:justify-start gap-4 mt-6">
+                    <a id="about-github" href="#" class="text-gray-400 hover:text-white transition-colors" title="GitHub">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
+                    </a>
+                    <a id="about-linkedin" href="#" class="text-gray-400 hover:text-white transition-colors" title="LinkedIn">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                    </a>
+                </div>
+            </div>
+            <button id="edit-profile-btn" class="absolute top-4 right-4 btn bg-gray-700 hover:bg-gray-600 text-white font-bold py-1 px-3 rounded-lg text-sm hidden-admin">Edit Profil</button>
+        </div>
+
         <!-- Main Controls (Admin Only) -->
         <div id="admin-controls" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-8 flex-wrap items-center justify-between gap-4 hidden-admin">
             <div>
@@ -59,7 +80,7 @@
             </div>
         </div>
 
-        <!-- Modals (Login, Add/Edit, Preview, Confirm) -->
+        <!-- Modals -->
         <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
             <div class="modal-content bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-sm">
                 <h2 class="text-2xl font-bold mb-6 text-white text-center">Admin Login</h2>
@@ -110,6 +131,43 @@
             </div>
         </div>
 
+        <!-- [NEW] Profile Edit Modal -->
+        <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
+            <div class="modal-content bg-gray-800 rounded-lg shadow-xl p-8 w-full max-w-2xl max-h-screen overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6 text-white">Edit Profil</h2>
+                <form id="profile-form">
+                    <div class="mb-4">
+                        <label for="profile-name" class="block text-gray-300 text-sm font-bold mb-2">Nama</label>
+                        <input type="text" id="profile-name" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profile-title" class="block text-gray-300 text-sm font-bold mb-2">Jabatan / Keahlian</label>
+                        <input type="text" id="profile-title" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profile-bio" class="block text-gray-300 text-sm font-bold mb-2">Bio Singkat</label>
+                        <textarea id="profile-bio" rows="3" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="profile-image-url" class="block text-gray-300 text-sm font-bold mb-2">URL Foto Profil</label>
+                        <input type="url" id="profile-image-url" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profile-github-url" class="block text-gray-300 text-sm font-bold mb-2">URL GitHub</label>
+                        <input type="url" id="profile-github-url" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profile-linkedin-url" class="block text-gray-300 text-sm font-bold mb-2">URL LinkedIn</label>
+                        <input type="url" id="profile-linkedin-url" class="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-white">
+                    </div>
+                    <div class="flex items-center justify-end gap-4 mt-8">
+                        <button type="button" id="profile-cancel-btn" class="btn bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg">Batal</button>
+                        <button type="submit" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg">Simpan Profil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div id="preview-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50">
             <div class="modal-content bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-screen flex flex-col">
                 <div id="preview-content" class="p-6 md:p-8 overflow-y-auto"></div>
@@ -146,13 +204,34 @@
     document.addEventListener('DOMContentLoaded', () => {
         // --- CONFIG & STATE ---
         const KEYPASS = 'sirjosev';
-        let portfolioData = [];
+        // [MODIFIED] Data structure is now an object
+        let appData = {
+            profile: {
+                name: "Nama Anda",
+                title: "Jabatan / Keahlian Anda",
+                bio: "Deskripsi singkat tentang diri Anda. Klik tombol \"Edit Profil\" setelah login untuk mengubah bagian ini.",
+                imageUrl: "https://placehold.co/150x150/4f46e5/ffffff?text=Foto+Anda",
+                githubUrl: "#",
+                linkedinUrl: "#",
+            },
+            items: []
+        };
         let currentFilter = 'all';
         let filteredData = [];
         let isLoggedIn = false;
 
         // --- DOM ELEMENTS ---
         const dom = {
+            editProfileBtn: document.getElementById('edit-profile-btn'),
+            profileModal: document.getElementById('profile-modal'),
+            profileForm: document.getElementById('profile-form'),
+            profileCancelBtn: document.getElementById('profile-cancel-btn'),
+            aboutImage: document.getElementById('about-image'),
+            aboutName: document.getElementById('about-name'),
+            aboutTitle: document.getElementById('about-title'),
+            aboutBio: document.getElementById('about-bio'),
+            aboutGithub: document.getElementById('about-github'),
+            aboutLinkedin: document.getElementById('about-linkedin'),
             adminControls: document.getElementById('admin-controls'),
             loginBtn: document.getElementById('login-btn'),
             logoutBtn: document.getElementById('logout-btn'),
@@ -187,12 +266,12 @@
         }
 
         function updateLoginUI() {
-            document.body.classList.toggle('admin-mode', isLoggedIn);
             dom.adminControls.classList.toggle('hidden-admin', !isLoggedIn);
             dom.adminControls.classList.toggle('flex', isLoggedIn);
+            dom.editProfileBtn.classList.toggle('hidden-admin', !isLoggedIn);
             dom.loginBtn.classList.toggle('hidden', isLoggedIn);
             dom.logoutBtn.classList.toggle('hidden-admin', !isLoggedIn);
-            updateUI(); // Re-render cards to show/hide edit buttons
+            updateUI();
         }
 
         function handleLogin(event) {
@@ -219,37 +298,55 @@
         // --- DATA MANAGEMENT ---
         async function loadInitialData() {
             try {
-                // Always try to fetch from portfolio.json first as per requirement
                 const response = await fetch('portfolio.json');
                 if (response.ok) {
-                    portfolioData = await response.json();
-                    console.log('Data loaded from portfolio.json');
+                    const data = await response.json();
+                    // Handle both new object structure and old array structure
+                    if (Array.isArray(data)) {
+                        appData.items = data; // Old format
+                    } else {
+                        appData = { ...appData, ...data }; // New format
+                    }
                 } else {
-                    // Fallback to localStorage if file not found
                     const localData = localStorage.getItem('portfolioData');
                     if (localData) {
-                        portfolioData = JSON.parse(localData);
-                        console.log('Data loaded from localStorage.');
+                        const data = JSON.parse(localData);
+                        if (Array.isArray(data)) {
+                            appData.items = data;
+                        } else {
+                            appData = { ...appData, ...data };
+                        }
                     }
                 }
             } catch (error) {
                 console.error("Could not load initial data:", error);
-                portfolioData = [];
             } finally {
-                checkLoginState(); // This will call updateUI
+                checkLoginState(); // This calls updateUI which calls renderProfile
             }
         }
 
         function saveData() {
-            localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+            localStorage.setItem('portfolioData', JSON.stringify(appData));
         }
 
         // --- UI RENDERING ---
+        function renderProfile() {
+            const profile = appData.profile;
+            dom.aboutImage.src = profile.imageUrl || 'https://placehold.co/150x150/4f46e5/ffffff?text=Foto+Anda';
+            dom.aboutName.textContent = profile.name || 'Nama Anda';
+            dom.aboutTitle.textContent = profile.title || 'Jabatan / Keahlian Anda';
+            dom.aboutBio.textContent = profile.bio || 'Deskripsi singkat tentang diri Anda.';
+            dom.aboutGithub.href = profile.githubUrl || '#';
+            dom.aboutLinkedin.href = profile.linkedinUrl || '#';
+        }
+
         function updateUI() {
+            renderProfile(); // Always render profile first
             renderFilterButtons();
             applyFilter();
-            dom.noDataMessage.classList.toggle('hidden', portfolioData.length > 0);
-            dom.portfolioGrid.classList.toggle('hidden', portfolioData.length === 0);
+            const hasItems = appData.items.length > 0;
+            dom.noDataMessage.classList.toggle('hidden', hasItems);
+            dom.portfolioGrid.classList.toggle('hidden', !hasItems);
         }
 
         function renderPortfolioItems(items) {
@@ -260,7 +357,7 @@
                 card.dataset.id = item.id;
 
                 const tags = parseHashtags(item.categories || '');
-                const tagsHtml = tags.map(tag => `<span class="bg-gray-700 text-indigo-300 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">${tag}</span>`).join('');
+                const tagsHtml = tags.map(tag => `<span class="bg-gray-700 text-indigo-300 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">${tag.substring(1)}</span>`).join('');
 
                 card.innerHTML = `
                     <div class="flex-grow mb-4" data-action="preview">
@@ -279,7 +376,7 @@
 
         function renderFilterButtons() {
             const allTags = new Set();
-            portfolioData.forEach(item => {
+            appData.items.forEach(item => {
                 parseHashtags(item.categories || '').forEach(tag => allTags.add(tag));
             });
 
@@ -287,7 +384,7 @@
             dom.filterContainer.innerHTML = '';
             sortedTags.forEach(tag => {
                 const button = document.createElement('button');
-                button.textContent = tag;
+                button.textContent = tag === 'all' ? 'all' : tag.substring(1);
                 const baseClasses = 'btn capitalize py-2 px-4 rounded-lg font-medium';
                 button.className = tag === currentFilter
                     ? `${baseClasses} bg-indigo-600 text-white`
@@ -299,8 +396,8 @@
 
         function applyFilter() {
             filteredData = (currentFilter === 'all')
-                ? [...portfolioData]
-                : portfolioData.filter(item => (item.categories || '').includes(currentFilter));
+                ? [...appData.items]
+                : appData.items.filter(item => (item.categories || '').includes(currentFilter));
             renderPortfolioItems(filteredData);
         }
         
@@ -308,7 +405,6 @@
         function openItemModal(item = null) {
             dom.itemForm.reset();
             if (item) {
-                // Mode Edit
                 dom.modalTitle.textContent = 'Edit Item Portofolio';
                 document.getElementById('item-id').value = item.id;
                 document.getElementById('title').value = item.title;
@@ -317,21 +413,28 @@
                 document.getElementById('media').value = item.media ? item.media.join('\n') : '';
                 document.getElementById('documentation').value = item.documentation || '';
             } else {
-                // Mode Tambah Baru
                 dom.modalTitle.textContent = 'Tambah Item Portofolio';
-                // Pastikan ID kosong untuk item baru
                 document.getElementById('item-id').value = ''; 
             }
             dom.itemModal.classList.remove('hidden');
         }
 
-        // --- [FIXED] FUNGSI PENYIMPANAN ITEM ---
-        function handleFormSubmit(event) {
+        function openProfileModal() {
+            const profile = appData.profile;
+            document.getElementById('profile-name').value = profile.name || '';
+            document.getElementById('profile-title').value = profile.title || '';
+            document.getElementById('profile-bio').value = profile.bio || '';
+            document.getElementById('profile-image-url').value = profile.imageUrl || '';
+            document.getElementById('profile-github-url').value = profile.githubUrl || '';
+            document.getElementById('profile-linkedin-url').value = profile.linkedinUrl || '';
+            dom.profileModal.classList.remove('hidden');
+        }
+
+        function handleItemFormSubmit(event) {
             event.preventDefault();
             const id = document.getElementById('item-id').value;
             const mediaValue = document.getElementById('media').value.trim();
 
-            // Kumpulkan semua data dari form ke satu objek
             const itemData = {
                 title: document.getElementById('title').value.trim(),
                 categories: document.getElementById('categories').value.trim(),
@@ -341,17 +444,13 @@
             };
 
             if (id) {
-                // --- LOGIKA UPDATE ---
-                // Jika ada ID, cari item yang ada dan perbarui
-                const index = portfolioData.findIndex(item => item.id === id);
+                const index = appData.items.findIndex(item => item.id === id);
                 if (index !== -1) {
-                    portfolioData[index] = { ...portfolioData[index], ...itemData, id: id };
+                    appData.items[index] = { ...appData.items[index], ...itemData, id: id };
                 }
             } else {
-                // --- LOGIKA TAMBAH BARU ---
-                // Jika tidak ada ID, buat item baru dengan ID baru
                 const newItem = { ...itemData, id: `item-${Date.now()}` };
-                portfolioData.unshift(newItem);
+                appData.items.unshift(newItem);
             }
             
             saveData();
@@ -359,24 +458,42 @@
             dom.itemModal.classList.add('hidden');
         }
 
+        function handleProfileFormSubmit(event) {
+            event.preventDefault();
+            appData.profile = {
+                name: document.getElementById('profile-name').value,
+                title: document.getElementById('profile-title').value,
+                bio: document.getElementById('profile-bio').value,
+                imageUrl: document.getElementById('profile-image-url').value,
+                githubUrl: document.getElementById('profile-github-url').value,
+                linkedinUrl: document.getElementById('profile-linkedin-url').value,
+            };
+            saveData();
+            renderProfile();
+            dom.profileModal.classList.add('hidden');
+        }
+
         // --- PREVIEW & MEDIA HANDLING ---
         function handlePreview(id) {
-            const item = portfolioData.find(i => i.id === id);
+            const item = appData.items.find(i => i.id === id);
             if (!item) return;
 
             const tags = parseHashtags(item.categories || '');
-            const tagsHtml = tags.map(tag => `<span class="bg-indigo-500 text-white text-sm font-semibold mr-2 px-3 py-1 rounded-full">${tag}</span>`).join('');
+            const tagsHtml = tags.map(tag => `<span class="bg-indigo-500 text-white text-sm font-semibold mr-2 px-3 py-1 rounded-full">${tag.substring(1)}</span>`).join('');
 
             const mediaHtml = (item.media || []).map(renderMedia).join('');
             const documentationHtml = item.documentation ? marked.parse(item.documentation) : '';
 
             dom.previewContent.innerHTML = `
-                <h2 class="text-3xl font-bold text-white mb-4">${item.title}</h2>
-                <div class="flex flex-wrap gap-2 mb-6">${tagsHtml}</div>
+                <h2 class="text-4xl font-extrabold text-white">${item.title}</h2>
+                <div class="flex flex-wrap gap-2 my-6">${tagsHtml}</div>
+                
                 <div class="prose prose-invert max-w-none text-gray-300">
-                    <p class="lead">${item.description || ''}</p>
-                    ${mediaHtml ? `<h3>Media & Lampiran</h3>${mediaHtml}` : ''}
-                    ${documentationHtml ? `<h3>Dokumentasi Detail</h3>${documentationHtml}` : ''}
+                    <p class="text-lg text-gray-300">${item.description || ''}</p>
+                    
+                    ${mediaHtml ? `<div class="mt-8 pt-6 border-t border-gray-700"><h3>Media & Lampiran</h3>${mediaHtml}</div>` : ''}
+                    
+                    ${documentationHtml ? `<div class="mt-8 pt-6 border-t border-gray-700"><h3>Dokumentasi Detail</h3>${documentationHtml}</div>` : ''}
                 </div>
             `;
             dom.previewModal.classList.remove('hidden');
@@ -419,11 +536,11 @@
             if (e.target.closest('[data-action="preview"]')) {
                 handlePreview(id);
             } else if (e.target.classList.contains('edit-btn')) {
-                const item = portfolioData.find(i => i.id === id);
+                const item = appData.items.find(i => i.id === id);
                 if (item) openItemModal(item);
             } else if (e.target.classList.contains('delete-btn')) {
                 showConfirm('Apakah Anda yakin ingin menghapus item ini?', () => {
-                    portfolioData = portfolioData.filter(item => item.id !== id);
+                    appData.items = appData.items.filter(item => item.id !== id);
                     saveData();
                     updateUI();
                 });
@@ -432,7 +549,7 @@
 
         // --- IMPORT / EXPORT ---
         function exportToJson(data, filename) {
-            if (data.length === 0) { showConfirm("Tidak ada data untuk diekspor.", () => {}); return; }
+            if (data.items.length === 0 && !data.profile.name) { showConfirm("Tidak ada data untuk diekspor.", () => {}); return; }
             const jsonString = JSON.stringify(data, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -450,10 +567,11 @@
                 showConfirm('Ini akan menimpa data saat ini. Lanjutkan?', () => {
                     try {
                         const importedData = JSON.parse(e.target.result);
-                        if (Array.isArray(importedData)) {
-                            portfolioData = importedData;
-                            saveData(); updateUI();
-                        } else { showConfirm('Format JSON tidak valid.', () => {});}
+                        if (importedData.profile && Array.isArray(importedData.items)) {
+                            appData = importedData;
+                            saveData(); 
+                            updateUI();
+                        } else { showConfirm('Format JSON tidak valid. Harus berupa objek dengan key "profile" dan "items".', () => {});}
                     } catch (error) {
                         showConfirm('Gagal membaca file JSON.', () => {});
                     }
@@ -483,14 +601,17 @@
         dom.loginForm.addEventListener('submit', handleLogin);
         dom.loginCancelBtn.addEventListener('click', () => dom.loginModal.classList.add('hidden'));
         dom.addNewBtn.addEventListener('click', () => openItemModal());
-        dom.itemForm.addEventListener('submit', handleFormSubmit);
+        dom.itemForm.addEventListener('submit', handleItemFormSubmit);
         dom.cancelBtn.addEventListener('click', () => dom.itemModal.classList.add('hidden'));
+        dom.editProfileBtn.addEventListener('click', openProfileModal);
+        dom.profileForm.addEventListener('submit', handleProfileFormSubmit);
+        dom.profileCancelBtn.addEventListener('click', () => dom.profileModal.classList.add('hidden'));
         dom.previewCloseBtn.addEventListener('click', () => dom.previewModal.classList.add('hidden'));
         dom.confirmCancelBtn.addEventListener('click', () => dom.confirmModal.classList.add('hidden'));
         dom.portfolioGrid.addEventListener('click', handleItemClick);
         dom.importInput.addEventListener('change', handleImport);
-        dom.exportAllBtn.addEventListener('click', () => exportToJson(portfolioData, 'portfolio.json'));
-        dom.exportFilteredBtn.addEventListener('click', () => exportToJson(filteredData, `portfolio_${currentFilter.replace('#', '')}.json`));
+        dom.exportAllBtn.addEventListener('click', () => exportToJson(appData, 'portfolio.json'));
+        dom.exportFilteredBtn.addEventListener('click', () => exportToJson({ profile: appData.profile, items: filteredData }, `portfolio_${currentFilter.replace('#', '')}.json`));
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.fixed.z-50').forEach(modal => modal.classList.add('hidden'));
@@ -503,3 +624,4 @@
     </script>
 </body>
 </html>
+

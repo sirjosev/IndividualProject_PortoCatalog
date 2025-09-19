@@ -189,8 +189,8 @@
 
         <!-- Filter & Display -->
         <div class="mb-8">
-            <h3 class="text-xl font-semibold mb-4 text-white">Filter berdasarkan Tag</h3>
-            <div id="filter-container" class="flex flex-wrap gap-2"></div>
+            <label for="filter-dropdown" class="text-xl font-semibold mb-4 text-white">Filter berdasarkan Tag</label>
+            <select id="filter-dropdown" class="bg-gray-700 text-white p-2 rounded-lg"></select>
         </div>
 
         <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
@@ -251,7 +251,7 @@
             confirmOkBtn: document.getElementById('confirm-ok-btn'),
             confirmCancelBtn: document.getElementById('confirm-cancel-btn'),
             portfolioGrid: document.getElementById('portfolio-grid'),
-            filterContainer: document.getElementById('filter-container'),
+            filterDropdown: document.getElementById('filter-dropdown'),
             noDataMessage: document.getElementById('no-data-message'),
             addNewBtn: document.getElementById('add-new-btn'),
             exportAllBtn: document.getElementById('export-all-btn'),
@@ -342,7 +342,7 @@
 
         function updateUI() {
             renderProfile(); // Always render profile first
-            renderFilterButtons();
+            renderFilterOptions();
             applyFilter();
             const hasItems = appData.items.length > 0;
             dom.noDataMessage.classList.toggle('hidden', hasItems);
@@ -374,23 +374,22 @@
             });
         }
 
-        function renderFilterButtons() {
+        function renderFilterOptions() {
             const allTags = new Set();
             appData.items.forEach(item => {
                 parseHashtags(item.categories || '').forEach(tag => allTags.add(tag));
             });
 
             const sortedTags = ['all', ...Array.from(allTags).sort()];
-            dom.filterContainer.innerHTML = '';
+            dom.filterDropdown.innerHTML = '';
             sortedTags.forEach(tag => {
-                const button = document.createElement('button');
-                button.textContent = tag === 'all' ? 'all' : tag.substring(1);
-                const baseClasses = 'btn capitalize py-2 px-4 rounded-lg font-medium';
-                button.className = tag === currentFilter
-                    ? `${baseClasses} bg-indigo-600 text-white`
-                    : `${baseClasses} bg-gray-700 hover:bg-gray-600 text-gray-300`;
-                button.addEventListener('click', () => { currentFilter = tag; updateUI(); });
-                dom.filterContainer.appendChild(button);
+                const option = document.createElement('option');
+                option.value = tag;
+                option.textContent = tag === 'all' ? 'All' : tag.substring(1);
+                if (tag === currentFilter) {
+                    option.selected = true;
+                }
+                dom.filterDropdown.appendChild(option);
             });
         }
 
@@ -608,6 +607,10 @@
         dom.profileCancelBtn.addEventListener('click', () => dom.profileModal.classList.add('hidden'));
         dom.previewCloseBtn.addEventListener('click', () => dom.previewModal.classList.add('hidden'));
         dom.confirmCancelBtn.addEventListener('click', () => dom.confirmModal.classList.add('hidden'));
+        dom.filterDropdown.addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            updateUI();
+        });
         dom.portfolioGrid.addEventListener('click', handleItemClick);
         dom.importInput.addEventListener('change', handleImport);
         dom.exportAllBtn.addEventListener('click', () => exportToJson(appData, 'portfolio.json'));
